@@ -40,18 +40,43 @@
 			    		v_houses[h_id].push(v)
 			    	}
 			    }
-
+			var markers=[];
+			
 			function initMap() {
 				var loaded_map = false;
 				for(var i=0;i<houses.length;i++){
 				  var p = houses[i];
 				  
 				  const position = { lat: parseFloat(p.fields.latitude), lng: parseFloat(p.fields.longitude) };
-				  console.log(p.fields.latitude);
 				  if(!loaded_map){
 					  map = new google.maps.Map(document.getElementById("map"), {
 					    center: position,
 					    zoom: 16	
+					  });
+
+					  map.addListener('zoom_changed', function() {
+					    
+					    if (map.zoom === 18) {
+					      console.log(marker.icon);
+					    	for(var i=0;i<markers.length;i++){
+					    		markers[i].icon.scaledSize = new google.maps.Size(100,100);
+						      	markers[i].icon.size = new google.maps.Size(100, 100);
+						      	markers[i].icon.labelOrigin = new google.maps.Point(50, 30);
+						      	markers[i].setMap(map);
+					    	}
+					      
+					    }
+
+					    if (map.zoom === 17) {
+					    	for(var i=0;i<markers.length;i++){
+					      //restore to original size upon specific zoom
+					      markers[i].icon.scaledSize = new google.maps.Size(64, 64);
+					      markers[i].icon.size = new google.maps.Size(64, 64);
+					      markers[i].icon.labelOrigin = new google.maps.Point(35,20)
+					      markers[i].setMap(map);
+					    	}
+
+					    }
 					  });
 					  loaded_map = true;
 					}
@@ -59,8 +84,18 @@
 				  const marker = new google.maps.Marker({
 				    position: position,
 				    map: map,
-				    label: ""+(i+1)
+				    label: {
+				    	text: ""+(i+1),
+				    	fontSize: "1.6em",
+				    },
+
+					icon: {
+				      url: "../../red-blank.png",
+				      labelOrigin: new google.maps.Point(35,20)
+				  	}
 				  });
+
+				  markers.push(marker)
 				  let voter_str = "";
 				  if(v_houses[p.pk]){
 				  	for(var j=0;j<v_houses[p.pk].length;j++){
@@ -68,7 +103,7 @@
 				  	}
 				  }
 				  const infowindow = new google.maps.InfoWindow({
-				    content: "<strong>H#"+(i+1)+":</strong><br/>" +p.fields.address +"<br/><br/>"+voter_str,
+				    content: "<div style='font-size:1.8em;'><strong>H#"+(i+1)+":</strong><br/>" +p.fields.address +"<br/><br/>"+voter_str+"</div>",
 				  });
 				  marker.addListener("click", () => {
 				  	if(info_w!=null){
