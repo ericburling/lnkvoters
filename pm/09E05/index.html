@@ -45,7 +45,6 @@
 				  var p = houses[i];
 				  
 				  const position = { lat: parseFloat(p.fields.latitude), lng: parseFloat(p.fields.longitude) };
-				  console.log(p.fields.latitude);
 				  if(!loaded_map){
 					  map = new google.maps.Map(document.getElementById("map"), {
 					    center: position,

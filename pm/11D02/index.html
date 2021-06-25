@@ -17,6 +17,9 @@
 		  margin: 0;
 		  padding: 0;
 		}
+		#map img {
+		    max-width: none !important; // just in case it does not work... add !important;
+		}
 		</style>
 		<script type="text/javascript">
 			let map;
@@ -47,7 +50,6 @@
 				  var p = houses[i];
 				  
 				  const position = { lat: parseFloat(p.fields.latitude), lng: parseFloat(p.fields.longitude) };
-				  console.log(p.fields.latitude);
 				  if(!loaded_map){
 					  map = new google.maps.Map(document.getElementById("map"), {
 					    center: position,
@@ -59,7 +61,10 @@
 				  const marker = new google.maps.Marker({
 				    position: position,
 				    map: map,
-				    label: ""+(i+1)
+				    label: {
+				    	text: ""+(i+1),
+				    	fontSize: "1.6em"
+				    }
 				  });
 				  let voter_str = "";
 				  if(v_houses[p.pk]){
@@ -68,7 +73,7 @@
 				  	}
 				  }
 				  const infowindow = new google.maps.InfoWindow({
-				    content: "<strong>H#"+(i+1)+":</strong><br/>" +p.fields.address +"<br/><br/>"+voter_str,
+				    content: "<div style='font-size:1.8em;'><strong>H#"+(i+1)+":</strong><br/>" +p.fields.address +"<br/><br/>"+voter_str+"</div>",
 				  });
 				  marker.addListener("click", () => {
 				  	if(info_w!=null){
